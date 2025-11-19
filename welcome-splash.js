@@ -1,34 +1,70 @@
 // Vibrant Welcome Splash Screen Script
 document.addEventListener('DOMContentLoaded', function() {
-    // Create splash screen HTML
-    const splashHTML = `
-        <div class="welcome-splash" id="welcomeSplash">
-            <div class="splash-particles">
-                <div class="splash-particle"></div>
-                <div class="splash-particle"></div>
-                <div class="splash-particle"></div>
-                <div class="splash-particle"></div>
-                <div class="splash-particle"></div>
-            </div>
-            <div class="splash-content">
-                <div class="splash-logo-container">
-                    <img src="1000079924.png" alt="Logo" class="splash-logo-img">
-                    <div class="splash-logo-text">
-                        <span class="splash-brand-text">BOMBAY</span> 
-                        <span class="splash-guard-text">GUARD</span> 
-                        <span class="splash-security-text">SERVICES</span>
-                    </div>
-                </div>
-                <div class="splash-tagline">Elite Protection • Trusted Excellence</div>
-                <div class="splash-loader"></div>
-            </div>
-        </div>
-    `;
+    // Create splash screen using safe DOM creation
+    const splashDiv = document.createElement('div');
+    splashDiv.id = 'welcomeSplash';
+    splashDiv.className = 'welcome-splash';
     
-    // Insert splash screen at the beginning of body
-    document.body.insertAdjacentHTML('afterbegin', splashHTML);
+    const particlesDiv = document.createElement('div');
+    particlesDiv.className = 'splash-particles';
+    for (let i = 0; i < 5; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'splash-particle';
+        particlesDiv.appendChild(particle);
+    }
     
-    // Hide splash screen after 5 seconds with fade out effect
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'splash-content';
+    
+    const logoContainer = document.createElement('div');
+    logoContainer.className = 'splash-logo-container';
+    
+    const img = document.createElement('img');
+    img.src = '1000079924.png';
+    img.alt = 'Logo';
+    img.className = 'splash-logo-img';
+    
+    const logoText = document.createElement('div');
+    logoText.className = 'splash-logo-text';
+    
+    const spanBomb = document.createElement('span');
+    spanBomb.className = 'splash-brand-text';
+    spanBomb.textContent = 'BOMBAY';
+    
+    const spanGuard = document.createElement('span');
+    spanGuard.className = 'splash-guard-text';
+    spanGuard.textContent = 'GUARD';
+    
+    const spanServ = document.createElement('span');
+    spanServ.className = 'splash-security-text';
+    spanServ.textContent = 'SERVICES';
+    
+    logoText.appendChild(spanBomb);
+    logoText.appendChild(document.createTextNode(' '));
+    logoText.appendChild(spanGuard);
+    logoText.appendChild(document.createTextNode(' '));
+    logoText.appendChild(spanServ);
+    
+    logoContainer.appendChild(img);
+    logoContainer.appendChild(logoText);
+    
+    const tagline = document.createElement('div');
+    tagline.className = 'splash-tagline';
+    tagline.textContent = 'Elite Protection • Trusted Excellence';
+    
+    const loader = document.createElement('div');
+    loader.className = 'splash-loader';
+    
+    contentDiv.appendChild(logoContainer);
+    contentDiv.appendChild(tagline);
+    contentDiv.appendChild(loader);
+    
+    splashDiv.appendChild(particlesDiv);
+    splashDiv.appendChild(contentDiv);
+    
+    document.body.insertBefore(splashDiv, document.body.firstChild);
+    
+    // Hide splash screen after 1 second with fade out effect
     setTimeout(function() {
         const splash = document.getElementById('welcomeSplash');
         if (splash) {
@@ -39,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 splash.remove();
             }, 800);
         }
-    }, 5000);
+    }, 1000);
     
     // Add vibrant entrance animations to page elements
     setTimeout(function() {
@@ -53,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add sparkle effect to hero section
         addSparkleEffect();
-    }, 5500);
+    }, 1800);
 });
 
 // Add sparkle effect function
