@@ -554,41 +554,39 @@ function getPackageOptions(serviceType, selectedPackage = null) {
 async function submitBookingData(serviceType) {
     const bookingData = {
         serviceType: serviceType,
-        fullName: document.getElementById('fullName').value,
+        name: document.getElementById('fullName').value,
         phone: document.getElementById('phone').value,
         email: document.getElementById('email').value,
         address: document.getElementById('address').value,
-        servicePackage: document.getElementById('servicePackage').value,
+        service: document.getElementById('servicePackage').value,
         startDate: document.getElementById('startDate').value,
-        requirements: document.getElementById('requirements').value
+        requirements: document.getElementById('requirements').value,
+        location: document.getElementById('address').value
     };
     
-    if (!bookingData.fullName || !bookingData.phone || !bookingData.email || !bookingData.address || !bookingData.servicePackage || !bookingData.startDate) {
+    if (!bookingData.name || !bookingData.phone || !bookingData.email || !bookingData.address || !bookingData.service || !bookingData.startDate) {
         alert('Please fill all required fields');
         return;
     }
     
-    try {
-        const response = await fetch('http://localhost:3000/api/bookings', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(bookingData)
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            showBookingConfirmation({...bookingData, id: result.bookingId});
-        } else {
-            throw new Error(result.error || 'Booking failed');
-        }
-    } catch (error) {
-        // Fallback to show confirmation even if backend is not running
-        showBookingConfirmation({...bookingData, id: Date.now()});
-        console.log('Booking data would be sent:', bookingData);
+    // Save booking data for admin dashboard
+    const stored = localStorage.getItem('bookingSubmissions') || '[]';
+    const bookings = JSON.parse(stored);
+    const booking = {
+        ...bookingData,
+        timestamp: new Date().toISOString(),
+        id: Date.now(),
+        type: 'service_booking'
+    };
+    bookings.unshift(booking);
+    localStorage.setItem('bookingSubmissions', JSON.stringify(bookings));
+    
+    // Send WhatsApp notifications
+    if (typeof whatsappNotifier !== 'undefined') {
+        whatsappNotifier.sendBookingNotifications(bookingData);
     }
+    
+    showBookingConfirmation({...bookingData, id: booking.id});
 }
 
 function showBookingConfirmation(bookingData) {
